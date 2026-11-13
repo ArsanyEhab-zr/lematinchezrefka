@@ -1,0 +1,95 @@
+Le Matin — Supabase and Cloudinary setup
+
+Runtime: Node.js 22 or newer (.nvmrc is provided).
+
+DATABASE
+For a new project, run the complete supabase/schema.sql in Supabase SQL Editor.
+It creates all eight tables, explicit API grants, RLS, updated_at triggers,
+transactional catalog/settings seeding, and server-validated guest checkout.
+The installer is transactional and can be rerun without deleting existing data.
+
+For a project already using the earlier catalog, settings and visual CMS schema,
+apply migrations/20261111213200_cloud_sync.sql. If either earlier feature is
+missing, use the full schema.sql installer instead. The two older eight-digit
+migration files are historical SQL Editor scripts, not a complete CLI bootstrap
+chain: do not run migration up against an empty database using that folder.
+
+CONFIGURATION
+Copy .env.example to .env.local, replace the four placeholders and restart Vite,
+or save browser overrides in Site & Kitchen Settings > Integrations, Cloud
+Status & Database Seeding. Blank override fields fall back to environment values.
+Use only a Supabase anon or publishable key. Secret/service-role keys are rejected.
+Runtime overrides remain browser-local and are excluded from public site settings.
+
+Create a staff user in Supabase Auth. From trusted server-side administration or
+Supabase Dashboard, assign app_metadata.role = "admin". User metadata is never
+trusted for authorization. Sign in using the integration card; Supabase persists
+and refreshes the staff session. Sign out there when finished. Admin routes require
+a staff session when a Supabase project is configured; local preview remains usable.
+
+SEED AND SYNC
+Sign in, then click Push Initial Seed Data to Supabase. This atomically upserts
+current categories, boxes, ingredients, component slots, positive/negative swap
+rules, gallery images and public site settings. Demo orders and integration keys
+are excluded. Existing unrelated records are not deleted. Legacy local catalog
+slugs map deterministically to UUIDs and retain local_id for stable cart references.
+
+After configuration, public data loads on boot, every five seconds and on focus.
+An empty, unseeded catalog preserves the local sample catalog for initial seeding.
+Committed admin edits are queued immediately and pushed automatically when signed
+in. Persisted project-specific queues survive reloads; acknowledged changes are
+removed. Failed writes stay pending, retry up to three times, then wait for Retry
+sync. Pending local edits are protected from background hydration. Do not switch
+projects with pending edits unless you intend to return to complete those writes.
+One-click seeding is explicit; mounting the app never uploads demo data.
+
+The same browser's settings and gallery changes propagate to other open tabs.
+Visitor language choice is local; the administrator's default language is shared.
+The settings JSON config contains public settings only. Structured columns are
+updated with the same transaction and are used for checkout validation.
+
+ORDERS
+Menu ordering leads through Contact checkout. With Supabase configured, checkout
+refreshes shared settings, inserts the order, then opens the WhatsApp dispatch URL.
+A failed insert keeps the cart and reports the error. A per-tab request token makes
+network retries idempotent. The kitchen cache receives the successful order.
+Without Supabase configuration, ordering continues in the existing local mode.
+
+Database validation recomputes box prices and swap adjustments, checks availability,
+minimum subtotal, Cairo cutoff, delivery slot/date, delivery threshold and gift fee.
+Stale quoted prices are rejected. Receipt lines stored in the database are rebuilt
+from the catalog. Guests can insert orders but cannot read other customers' orders.
+Only authorized staff can read orders and update status. The dashboard fetches the
+latest 500 orders; older records remain in the database. WhatsApp still requires
+the customer to send the prepared message. A blocked popup has a retry link.
+
+CLOUDINARY
+Create an unsigned image upload preset in your Cloudinary account and set the
+cloud name and preset through env values or the integration card. Configure preset
+limits for your intended formats and file sizes. The browser uploads directly to
+Cloudinary; a successful upload stores its HTTPS secure_url. Admin image fields
+support drag/drop, progress, file selection, direct URL entry and live preview.
+A configured upload failure is shown and preserves the previous image.
+
+Without Cloudinary configuration, files are resized to at most 1600px and saved
+as WebP Data URLs. The input limit is 8 MB; local processed images are limited to
+650,000 characters to protect browser storage. With Cloudinary configured, the
+original accepted image uploads and the storefront uses f_auto/q_auto delivery
+and size limits for standard unsigned Cloudinary URLs. Signed, already transformed,
+external, and local image URLs are preserved. Cloudinary's badge says configured
+until an actual upload succeeds; it does not claim connectivity from configuration.
+
+Logo, favicon, hero, story, gallery, box and ingredient controls share the uploader.
+Removing a reference does not delete a remote asset, which may have other users.
+The legacy Supabase brand-media bucket remains compatible but new uploads use
+Cloudinary. Browser titles and favicon update live. Social crawlers that do not
+execute JavaScript still use the static HTML metadata.
+
+VERIFICATION
+npm test                 — UI-domain logic, media, IDs, deltas and localization
+npm run test:database    — real embedded PostgreSQL schema/seed/RLS/order checks
+npm run build            — tsc --noEmit && vite build
+
+Database tests use PGlite with test auth/storage scaffolding; they do not connect
+to a hosted project. Live Supabase Auth/API access and your Cloudinary preset must
+be verified after adding real credentials and applying the schema.

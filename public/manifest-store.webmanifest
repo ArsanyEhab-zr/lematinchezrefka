@@ -1,0 +1,25 @@
+{
+  "name": "Le Matin chez Refka",
+  "short_name": "Le Matin",
+  "description": "Artisanal French-inspired homemade breakfast boxes & morning brunch platters, delivered fresh every morning.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FDFBF7",
+  "theme_color": "#FDFBF7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/pwa/store-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa/store-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+/*
+ * Le Matin chez Refka — design tokens.
+ *
+ * Three layers, each only referencing the one above it:
+ *   1. Primitive  — raw brand values (immutable brand palette)
+ *   2. Semantic   — what a colour *means* in the interface
+ *   3. Component  — what a specific component consumes
+ *
+ * Values are RGB channels so Tailwind opacity modifiers work.
+ */
+
+:root {
+  /* ── Layer 1 · Primitive ─────────────────────────────── */
+  --lm-cream: 253 251 247;      /* #FDFBF7 — background, never pure white */
+  --lm-olive: 62 66 43;         /* #3E422B — text, icons, footer */
+  --lm-blush: 242 213 213;      /* #F2D5D5 — hover, badges, soft overlays */
+  --lm-gold: 176 130 72;        /* #B08248 — primary CTA, borders */
+  --lm-gold-deep: 150 108 56;   /* #966C38 — gold pressed/hover state only */
+  --lm-kraft: 217 195 169;      /* #D9C3A9 — subtle borders, cards */
+  --lm-white: 255 255 255;      /* text on gold/olive only, never a surface */
+
+  /* ── Layer 2 · Semantic ──────────────────────────────── */
+  --color-surface: var(--lm-cream);
+  --color-ink: var(--lm-olive);
+  --color-cta: var(--lm-gold);
+  --color-cta-hover: var(--lm-gold-deep);
+  --color-on-cta: var(--lm-white);
+  --color-highlight: var(--lm-blush);
+  --color-line: var(--lm-kraft);
+  --color-inverse-surface: var(--lm-olive);
+  --color-on-inverse: var(--lm-cream);
+
+  /* ── Layer 3 · Component ─────────────────────────────── */
+  --card-bg: var(--color-surface);
+  --card-border: var(--color-line);
+
+  --badge-pending-bg: var(--color-highlight);
+  --badge-pending-fg: var(--color-ink);
+  --badge-preparing-bg: var(--color-cta);
+  --badge-preparing-fg: var(--lm-white);
+  --badge-delivered-bg: var(--color-ink);
+  --badge-delivered-fg: var(--lm-white);
+
+  --sidebar-bg: var(--color-inverse-surface);
+  --sidebar-fg: var(--color-on-inverse);
+}
+

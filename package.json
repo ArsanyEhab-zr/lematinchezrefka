@@ -1,0 +1,42 @@
+{
+  "name": "le-matin-chez-refka",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --mode storefront",
+    "dev:admin": "vite --mode admin --port 5174",
+    "build": "tsc --noEmit && vite build",
+    "build:store": "tsc --noEmit && vite build --mode storefront --outDir dist-store",
+    "build:admin": "tsc --noEmit && vite build --mode admin --outDir dist-admin",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "node tests/run.mjs",
+    "test:database": "node tests/database.test.mjs"
+  },
+  "dependencies": {
+    "@cloudinary/react": "^1.14.4",
+    "@cloudinary/url-gen": "^1.22.0",
+    "@supabase/supabase-js": "2.119.0",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.14",
+    "@types/node": "^22.9.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.10"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
